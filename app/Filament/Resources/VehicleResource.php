@@ -2,22 +2,15 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\Brand;
-use App\Enums\VehicleType;
+use App\Filament\Forms\VehicleForm;
 use App\Filament\Resources\VehicleResource\Pages;
-use App\Filament\Resources\VehicleResource\RelationManagers;
+use App\Filament\Tables\VehicleTable;
 use App\Models\Vehicle;
-use Filament\Forms;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class VehicleResource extends Resource
 {
@@ -31,7 +24,7 @@ class VehicleResource extends Resource
         return $form
             ->schema([
                 Section::make('Vehicle Details')
-                    ->schema(self::getFormFields())
+                    ->schema(VehicleForm::getVehicleForm())
                     ->columns(2),
             ]);
     }
@@ -39,19 +32,8 @@ class VehicleResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('brand')
-                    ->label('Brand'),
-                TextColumn::make('model')
-                    ->label('Model'),
-                TextColumn::make('year')
-                    ->label('Year')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('type')
-            ])
+            ->columns(VehicleTable::getVehicleTable())
             ->filters([
-                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -65,9 +47,7 @@ class VehicleResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -77,52 +57,5 @@ class VehicleResource extends Resource
             'create' => Pages\CreateVehicle::route('/create'),
             'edit' => Pages\EditVehicle::route('/{record}/edit'),
         ];
-    }
-
-    public static function getTableColumns(): array
-    {
-        return [
-            TextColumn::make('brand')
-                ->label('Brand'),
-            TextColumn::make('model')
-                ->label('Model'),
-            TextColumn::make('year')
-                ->label('Year')
-                ->sortable()
-                ->searchable(),
-        ];
-    }
-
-    public static function getFormFields(): array
-    {
-        return [
-            Select::make('brand')
-                ->options(Brand::class)
-                ->required()
-                ->label('Brand'),
-            TextInput::make('model')
-                ->required()
-                ->maxLength(255)
-                ->label('Model'),
-            TextInput::make('year')
-                ->required()
-                ->numeric()
-                ->maxLength(4)
-                ->label('Year'),
-            Select::make('type')
-                ->options(VehicleType::class)
-                ->disabled()
-                ->visibleOn(['edit', 'view'])
-                ->label('Type'),
-        ];
-    }
-
-    public static function createVehicleForm(string $brand, string $model, string $year): Vehicle
-    {
-        return Vehicle::create([
-            'brand' => $brand,
-            'model' => $model,
-            'year' => $year,
-        ]);
     }
 }

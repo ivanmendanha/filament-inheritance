@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\CarResource\Pages;
 
+use App\Enums\VehicleType;
 use App\Filament\Resources\CarResource;
-use App\Filament\Resources\VehiclesResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateCar extends CreateRecord
@@ -13,14 +12,7 @@ class CreateCar extends CreateRecord
 
     public function create(bool $another = false): void
     {
-        $data = $this->data['vehicle'];
-        $vehicle = VehiclesResource::createVehicleForm(
-            brand: $data['brand'],
-            model: $data['model'],
-            year: $data['year'],
-        );
-
-        $this->data['vehicle_id'] = $vehicle->id;
+        $this->data['type'] = VehicleType::Car->value;
 
         parent::create($another);
     }

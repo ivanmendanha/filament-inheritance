@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('brand');
             $table->string('model');
             $table->year('year');
+            $table->integer('doors')->nullable();
+            $table->integer('load_capacity')->nullable();
+            $table->string('type');
             $table->timestamps();
         });
     }

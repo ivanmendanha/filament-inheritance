@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-use App\Enums\BrandEnum;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\VehicleType;
 
-class Car extends Model
+class Car extends Vehicle
 {
-    protected $fillable = ['vehicle_id', 'doors'];
+    protected $table = 'vehicles';
 
-    public function vehicle(): BelongsTo
+    protected static function booted()
     {
-        return $this->belongsTo(Vehicle::class);
+        static::addGlobalScope('onlyCars', function ($query) {
+            $query->where('type', VehicleType::Car->value);
+        });
     }
 }

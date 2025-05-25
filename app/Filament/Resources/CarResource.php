@@ -2,17 +2,15 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\VehicleForm;
 use App\Filament\Resources\CarResource\Pages;
+use App\Filament\Tables\VehicleTable;
 use App\Models\Car;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Forms\Components\Split;
 
 class CarResource extends Resource
 {
@@ -25,47 +23,17 @@ class CarResource extends Resource
     {
         return $form
             ->schema([
-                Split::make([
-                    Section::make()
-                        ->relationship('vehicle')
-                        ->schema(VehicleResource::getFormFields()),
-                    Section::make()
-                        ->schema([
-                            Hidden::make('vehicle_id'),
-                            TextInput::make('doors')
-                                ->label('Number of Doors')
-                                ->required()
-                                ->numeric()
-                                ->minValue(1)
-                                ->maxValue(5)
-                                ->default(4)
-                                ->placeholder('Enter number of doors'),
-                        ])
-                ])
-                ->columnSpanFull()
+                Section::make('Car Details')
+                    ->schema(VehicleForm::getCarForm())
+                    ->columns(2),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('vehicle.brand')
-                    ->label('Brand'),
-                TextColumn::make('vehicle.model')
-                    ->label('Model'),
-                TextColumn::make('vehicle.year')
-                    ->label('Year')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('doors')
-                    ->label('Number of Doors')
-                    ->sortable()
-                    ->searchable(),
-            ])
-            ->filters([
-                //
-            ])
+            ->columns(VehicleTable::getCarTable())
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
@@ -78,9 +46,7 @@ class CarResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
