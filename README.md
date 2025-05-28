@@ -53,3 +53,30 @@ O objetivo principal é **ensinar e exemplificar boas práticas** no uso do Fila
    docker-compose exec app bash
    composer install
    php artisan migrate
+
+## 📷 Imagens do Projeto
+
+1. Vehicle list
+
+![alt text](public/image.png)
+
+
+2. Vehicle creation and editing
+
+![alt text](public/image-1.png)
+
+3. Car List - cars only
+
+![alt text](public/image-2.png)
+
+4. Creating and editing cars
+
+![alt text](public/image-3.png)
+
+5. Truck List - trucks only
+
+![alt text](public/image-4.png)
+
+6. Creating and editing trucks
+
+![alt text](public/image-5.png)
