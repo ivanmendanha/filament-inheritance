@@ -2,20 +2,42 @@
 
 namespace App\Filament\Resources\TruckResource\Pages;
 
-use App\Enums\VehicleType;
 use App\Filament\Resources\TruckResource;
-use App\Filament\Resources\VehiclesResource;
+use App\Models\Truck;
+use App\Models\Vehicle;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class CreateTruck extends CreateRecord
 {
     protected static string $resource = TruckResource::class;
 
-    public function create(bool $another = false): void
+    protected function handleRecordCreation(array $data): Model
     {
-        $this->data['type'] = VehicleType::Truck->value;
+        try {
+            DB::beginTransaction();
 
-        parent::create($another);
+            $vehicle = Vehicle::query()->create([
+                'brand' => $data['brand'],
+                'model' => $data['model'],
+                'year' => $data['year'],
+            ]);
+
+            $truck = Truck::query()
+                ->create([
+                    'vehicle_id' => $vehicle->id,
+                    'load_capacity' => $data['load_capacity'],
+                ]);
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            $this->halt();
+        }
+
+        return $truck;
     }
 }
